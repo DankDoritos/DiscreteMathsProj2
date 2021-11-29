@@ -1,0 +1,299 @@
+#include<iostream>
+#include<vector>
+#include<stack>
+#include<list>
+#include<iterator>
+using namespace std;
+
+//lookup table to repreent verticies as letters rather than integers.
+static const char VertexLetter[20] = { 'A', 'B', 'C','D','E',
+'F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T' };
+
+int countComps;
+int isolatedVerticies;
+
+//Represents a graph by emulating as an adjacency list
+class Graph {
+	int V; // Number of vertices
+
+	//pointer to array containing adjacency lists
+	list<int>* adj;
+
+	//function used for Depth-First Search algorithm
+	void DFSTraverse(int v, bool visited[]);
+
+public:
+	Graph(int V); //constructor
+	void addEdge(int v, int w);
+	void numConnectedComps();
+};
+
+
+void Graph::numConnectedComps() //print connected components
+{
+	// Mark all the vertices as not visited
+	bool* visited = new bool[V];
+	for (int v = 0; v < V; v++)
+		visited[v] = false;
+
+	for (int v = 0; v < V; v++) {
+		if (visited[v] == false) {
+			// print all reachable vertices
+			// from v
+			DFSTraverse(v, visited);
+
+			cout << "\n";
+			countComps++;
+		}
+	}
+	delete[] visited;
+}
+
+void Graph::DFSTraverse(int v, bool visited[])
+{//used for depth-first search in graph
+	//Indicate that this vertex was already visited and print it
+	visited[v] = true;
+
+	//check to see if vertex is isolated
+	if (adj[v].begin() == adj[v].end())
+	{
+		//if so, decrement count of connected components
+		//as it will be incrimented with each new path
+		cout << "Isolated vertex : ";
+		isolatedVerticies++;
+		countComps--;
+	}
+	cout << VertexLetter[v]<< " ";
+
+	// Recur for all the vertices
+	// adjacent to this vertex
+	list<int>::iterator i;
+	for (i = adj[v].begin(); i != adj[v].end(); ++i)
+		if (!visited[*i])
+			DFSTraverse(*i, visited);
+}
+
+Graph::Graph(int V)
+{
+	this->V = V;
+	adj = new list<int>[V];
+}
+
+//add edge to graph
+void Graph::addEdge(int v, int w)
+{
+	adj[v].push_back(w);
+	adj[w].push_back(v);
+}
+
+int main()
+{
+	int runs = 1; //used to show which graph is which
+	//create 10 graphs each with 20 verticies
+	Graph g0(20);
+	Graph g1(20);
+	Graph g2(20);
+	Graph g3(20);
+	Graph g4(20);
+	Graph g5(20);
+	Graph g6(20);
+	Graph g7(20);
+	Graph g8(20);
+	Graph g9(20);
+
+	while (runs < 11)
+	{
+		countComps = 0;
+		isolatedVerticies = 0;
+
+		//give graph anywhere from 10 to 40 edges.
+		//190 would create a complete graph, but that's a ridiculous number
+		//of edges for this assignment. Likewise, less than 10 would 
+		//create multiple isolated verticies.
+		int numEdgesTemp = (rand() % 31 + 10);
+		int numEdges = numEdgesTemp;
+
+		int x[41];
+		int y[41];
+
+		//initialize all numbers to -1 to help indicate
+		//end of verticies on graph.
+		for (int i = 0; i < numEdges; i++)
+		{
+			x[i] = -1;
+			y[i] = -1;
+		}
+
+		for (int i = 0; i < numEdges; i++)
+		{
+			//this variable will be used to make sure a 
+			//duplicate edge is not created.
+			int iTemp = i;
+
+			x[i] = rand() % 20;
+			y[i] = rand() % 20;
+
+			//make sure we don't create an edge that
+			//connects a vertex to itself
+			while (x[i] == y[i])
+			{
+				x[i] = rand() % 20;
+			}
+
+			for (int j = 0; j < i; j++)
+			{
+				//if we just created a duplicate edge,
+				//go back and try to make a unique edge.
+				if ((x[i] == x[j] && y[i] == y[j]) ||
+					(x[i] == y[j] && x[j] == y[i]))
+				{
+					i--;
+					break;
+				}
+			}
+
+			//If iTemp != i, that means the random numbers ended up
+			//trying to make a duplicate edge.
+			if (iTemp == i)
+			{
+				//display graph as set of edges
+				cout << "Edge: {" << VertexLetter[x[i]] << ", ";
+				cout << VertexLetter[y[i]] << "} added to graph " << runs << "!" << endl;
+
+				//add edge to respective graph for transversing algorithm
+				switch (runs)
+				{
+				case 1:
+				{
+					g0.addEdge(x[i], y[i]);
+					break;
+				}
+				case 2:
+				{
+					g1.addEdge(x[i], y[i]);
+					break;
+				}
+				case 3:
+				{
+					g2.addEdge(x[i], y[i]);
+					break;
+				}
+				case 4:
+				{
+					g3.addEdge(x[i], y[i]);
+					break;
+				}
+				case 5:
+				{
+					g4.addEdge(x[i], y[i]);
+					break;
+				}
+				case 6:
+				{
+					g5.addEdge(x[i], y[i]);
+					break;
+				}
+				case 7:
+				{
+					g6.addEdge(x[i], y[i]);
+					break;
+				}
+				case 8:
+				{
+					g7.addEdge(x[i], y[i]);
+					break;
+				}
+				case 9:
+				{
+					g8.addEdge(x[i], y[i]);
+					break;
+				}
+				case 10:
+				{
+					g9.addEdge(x[i], y[i]);
+					break;
+				}
+				}
+			}
+		}
+
+		//print connected components
+		//and isolated verticies, if there are any.
+		cout << "\n\nConnected Components: " << endl;
+		switch (runs)
+		{
+		case 1:
+		{
+			g0.numConnectedComps();
+			break;
+		}
+		case 2:
+		{
+			g1.numConnectedComps();
+			break;
+		}
+		case 3:
+		{
+			g2.numConnectedComps();
+			break;
+		}
+		case 4:
+		{
+			g3.numConnectedComps();
+			break;
+		}
+		case 5:
+		{
+			g4.numConnectedComps();
+			break;
+		}
+		case 6:
+		{
+			g5.numConnectedComps();
+			break;
+		}
+		case 7:
+		{
+			g6.numConnectedComps();
+			break;
+		}
+		case 8:
+		{
+			g7.numConnectedComps();
+			break;
+		}
+		case 9:
+		{
+			g8.numConnectedComps();
+			break;
+		}
+		case 10:
+		{
+			g9.numConnectedComps();
+			break;
+		}
+		}
+		if (isolatedVerticies > 0 && countComps == 1)
+		{
+			cout << "\nGraph " << runs << " is not entirely connected as there are isolated verticies." << endl;
+		}
+		else if (isolatedVerticies == 0 && countComps == 1)
+		{
+			cout << "\nGraph " << runs << " is completely connected as there are no isolated verticies." << endl;
+		}
+		else if (countComps > 1 && isolatedVerticies == 0)
+		{
+			cout << "\nGraph " << runs << " is not entirely connected, but there are no isolated verticies." << endl;
+		}
+		else if (countComps > 1 && isolatedVerticies > 0)
+		{
+			cout << "\nGraph " << runs << " is not completely connected." << endl;
+		}
+		cout << "\nNumber of Connected Components: " << countComps << endl;
+		cout << "-----------------------------------------------------------";
+		cout << "\n\n\n\n\n";
+		runs++;
+	}
+	int nothing;
+	cin >> nothing;
+}
