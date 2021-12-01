@@ -1,0 +1,73 @@
+// Author: Connor Holland
+// Sources: Depth first traversal: https://www.geeksforgeeks.org/depth-first-search-or-dfs-for-a-graph/
+//          Input Validation: https://www.delftstack.com/howto/cpp/cpp-input-validation/
+#include <iostream>
+#include <vector>
+#define MAX 150
+using namespace std;
+
+// Global containers
+// Container to hold edge pairs
+vector<int> graphArr[MAX];
+// Container to track the shape of the vertices (i.g. shape 1/0 = square/circle)
+int shapeArr[MAX];
+// Container to act as the stack for the bipartite algo function
+int finishArr[MAX];
+
+// Function to check whether graph is bipartite using depth first traversal algo
+bool bipartiteCheck(int x, int y)
+{
+    finishArr[x] = 1;
+    shapeArr[x] = y; // Set the source vertice as shape 1
+    for (int nearbyEdge : graphArr[x])
+    {
+        if (finishArr[nearbyEdge] == 0)
+        {
+            // Call function again - y XOR 1 for shape testing - if false not bipartite
+            if (bipartiteCheck(nearbyEdge, y xor 1) == false)
+                return 0;
+        }
+        else
+        {
+            // If same shape, not bipartite
+            if (shapeArr[x] == shapeArr[nearbyEdge])
+                return 0;
+        }
+    }
+    // If passes the previous checks then it is bipartite
+    return 1;
+}
+
+// Main
+int main()
+{
+    // Total vertice pair inputs
+    int total;
+    cout << "Enter the total number of edges for your simple graph: ";
+    cin >> total;
+    // Edge pair values
+    int a, b;
+    // Loop through all edge pairs and input them into graph vector
+    for (int i = 0; i < total; i++)
+    {
+        cout << "Enter the edge pair #" << i + 1 << ": ";
+        cin >> a >> b;
+        // Test the user input to make sure its an integer
+        while (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
+            cout << "Entered wrong input. Enter integers for your edge pairs #" << i + 1 << ": ";
+            cin >> a >> b;
+        }
+        graphArr[a].push_back(b);
+        graphArr[b].push_back(a);
+    }
+    // Call check function to determine whether its bipartite
+    bipartiteCheck(1, 1);
+    if (bipartiteCheck(1, 1) == true)
+        cout << "This is a bipartite graph";
+    else
+        cout << "This is not a bipartite graph";
+    return 0;
+}
