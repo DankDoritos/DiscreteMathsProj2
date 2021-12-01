@@ -1,0 +1,71 @@
+// Author: Connor Holland
+// Sources: https://www.tutorialspoint.com/what-is-gray-code
+//			    https://youtu.be/cF-Q5j7RUEw
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+int placement = 0;
+
+// Function to convert base 10 digits to binary digits
+void base10Binary(int x, int size)
+{
+	int remainder;
+	vector <int> binaryContainer;
+	int i = 0;
+	while (x != 0)
+	{
+		remainder = x % 2;
+		binaryContainer.push_back(remainder);
+		x = x / 2;
+		if (x == 1)
+		{
+			binaryContainer.push_back(1);
+			x = 0;
+			i++;
+		}
+		i++;
+	}
+	
+	// Insert in remaining zeros to the front so the bit string is 6
+	for (int k = 0; k < size - i; k++)
+		binaryContainer.push_back(0);
+	
+	// Placement counter for formatting consistency
+	if (placement < 10)
+		cout << "#" << placement << ":  ";
+	else
+		cout << "#" << placement << ": ";
+
+	// Iterate through vector in reverse to display correct binary order
+	for (int i = binaryContainer.size() - 1; i >= 0; i--)
+	{
+		cout << binaryContainer[i];
+	}
+	cout << endl;
+	placement++;
+}
+
+void constructGrayCode(int n)
+{
+	// Left shift the value to 6 digits
+	int N = 1 << n;
+	for (int i = 0; i < N; i++)
+	{
+		// Create gray code of first bit string
+		int bitString = i xor (i >> 1);
+
+		// printing gray code
+		base10Binary(bitString, n);
+
+		cout << endl;
+	}
+}
+
+int main()
+{
+	int n = 6;
+	constructGrayCode(n);
+	return 0;
+}
