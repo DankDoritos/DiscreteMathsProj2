@@ -1,0 +1,19 @@
+Munkhtulga Batjargal
+12.01.2021
+Munk_11.cpp
+
+Platform: Windows 10 Home
+
+
+Chapter  10 Program #11
+Given an adjacency matrix of a graph and a positive integer 'n', find the number of paths of length 'n' between two vertices.
+*Produce a version that works for directed and undirected graphs.
+
+Although the problem sounded simple, I had a hard time coding, as I ran into countless logic issues when attempting to code a user input matrix. In order to make the deadline, with Dr.J's permission, I reduced the project scope, by having the matrix hard-coded into the program, and have prompt inputs for only the vertices and positive integer n.
+
+Approach: 
+Since I hard-coded the graphs into adjacency matrix as shown in the code, it was not so challenging to complete it. Although, I won't fail to mention that there were some minor issues I ran into when coding. 
+
+To solve the paths for the undirected graphs, all I had to do was to raise the matrix to the n power to find the path number. Since the matrix was 4x4, I just needed to square the matrix. However, the length of 'n', could only be limited to 1 - > 4 , in order to avoid overlapping edges.
+
+For the undirected graph, as I mentioned before, since the adjacency matrix is 4x4, I had to use multiple nested if statements for each n case to make it work. In addition to the use of nested for loops to find adjacent edges. 
